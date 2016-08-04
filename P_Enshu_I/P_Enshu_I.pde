@@ -1,10 +1,18 @@
 //P演習Iの授業風景の模倣
 /*
 ●概要
-  PCの画面のボタンをクリックするとそこに書いてあるそれぞれの図形を描くことができる。
-  これを使えば、一瞬で授業課題を完成できるかも？
-  描いたものはEnterキーでGenerateフォルダにpdeファイルとして生成。
-*/
+ PCの画面のボタンをクリックするとそこに書いてあるそれぞれの図形を描くことができる。
+ これを使えば、一瞬で授業課題を完成できるかも？
+ 描いたものはEnterキーでGenerateフォルダにpdeファイルとして生成。
+ */
+
+Point pointClass;
+Line lineClass;
+Rect rectClass;
+Vertex vertexClass;
+Ellipse ellipseClass;
+Fill fillClass;
+Move moveClass;
 
 PrintWriter output;          //pdeファイルを出力するためのoutputを定義
 PFont myFont;                //日本語表記のため
@@ -36,57 +44,6 @@ int [] pointMoveFlag = new int [5000];    //ポイントの移動フラグ
 int [] pointMoveFLAGX = new int [5000];   //ポイントのx向き移動フラグ
 int [] pointMoveFLAGY = new int [5000];   //ポイントのy向き移動フラグ
 /////////////ポイントを描く////////////////////////////////////////////////////
-void drawPoint() {
-  strokeWeight(10);
-  for (int p=0; p<5000; p++) {
-    if (pointX[p]==0 && pointY[p]==0) {
-      continue;
-    }
-    if (pointStrokeFlag[p]==1) {
-      stroke(255, 0, 0);
-    } else {
-      stroke(0);
-    }
-    if (pointMoveFlag[p]==1) {
-      //ポイントのx座標移動判定
-      if (pointX[p]>width) {
-        pointX[p]=width;
-        pointMoveFLAGX[p]=1;
-      }
-      if (pointX[p]<0) {
-        pointX[p]=0;
-        pointMoveFLAGX[p]=0;
-      }
-      if (pointMoveFLAGX[p]==0) pointX[p]=pointX[p]+pointVX[p];
-      if (pointMoveFLAGX[p]==1) pointX[p]=pointX[p]-pointVX[p];
-      //ポイントのy座標移動判定
-      if (pointY[p]>height) {
-        pointY[p]=height;
-        pointMoveFLAGY[p]=1;
-      }
-      if (pointY[p]<0) {
-        pointY[p]=0;
-        pointMoveFLAGY[p]=0;
-      }
-      if (pointMoveFLAGY[p]==0) pointY[p]=pointY[p]+pointVY[p];
-      if (pointMoveFLAGY[p]==1) pointY[p]=pointY[p]-pointVY[p];
-    }
-    point(pointX[p], pointY[p]);
-  }
-  strokeWeight(2);
-}
-///////////ポイントの座標決定/////////////////////////////////////////////////
-void pointDragged() {
-  if (scaleMouseX>100 || scaleMouseX<0 || scaleMouseY>30 || scaleMouseY<0) {
-    pointX[P]=scaleMouseX;
-    pointY[P]=scaleMouseY;
-
-    output.println("  pointX["+P+"]="+pointX[P]+";");
-    output.println("  pointY["+P+"]="+pointY[P]+";");
-
-    P++;
-  }
-}
 //////////////////////////////////////////////////////////////////////////////
 //////////////////ラインを描くための要素/////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
@@ -106,141 +63,7 @@ int [] lineMoveFlag = new int [500];     //ラインの移動フラグ
 int [] lineMoveFLAGX = new int [500];    //ラインのx向き移動フラグ
 int [] lineMoveFLAGY = new int [500];    //ラインのy向き移動フラグ
 
-/////////////ラインを描く//////////////////////////////////////////////////////
-void drawLine() {
-  strokeWeight(5);
-  for (int l=0; l<500; l++) {
-    if (lineX1[l]==0 && lineY1[l]==0) {
-      continue;
-    }
-    if (lineStrokeFlag[l]==1) {
-      stroke(0, 0, 255);
-    } else {
-      stroke(0);
-    }
-    if (lineMoveFlag[l]==1) {
-      //ラインのx座標移動判定
-      if (lineX1[l]<=lineX2[l]) {
-        lineW[l]=lineX2[l]-lineX1[l];
-        if (lineX2[l]>width) {
-          lineX1[l]=width-lineW[l];
-          lineX2[l]=width;
-          lineMoveFLAGX[l]=1;
-        }
-        if (lineX1[l]<0) {
-          lineX1[l]=0;
-          lineX2[l]=0+lineW[l];
-          lineMoveFLAGX[l]=0;
-        }
-        if (lineMoveFLAGX[l]==0) {
-          lineX1[l]=lineX1[l]+lineVX[l];
-          lineX2[l]=lineX2[l]+lineVX[l];
-        }
-        if (lineMoveFLAGX[l]==1) {
-          lineX1[l]=lineX1[l]-lineVX[l];
-          lineX2[l]=lineX2[l]-lineVX[l];
-        }
-      }
-      if (lineX1[l]>lineX2[l]) {
-        lineW[l]=lineX1[l]-lineX2[l];
-        if (lineX1[l]>width) {
-          lineX1[l]=width;
-          lineX2[l]=width-lineW[l];
-          lineMoveFLAGX[l]=1;
-        }
-        if (lineX2[l]<0) {
-          lineX1[l]=0+lineW[l];
-          lineX2[l]=0;
-          lineMoveFLAGX[l]=0;
-        }
-        if (lineMoveFLAGX[l]==0) {
-          lineX1[l]=lineX1[l]+lineVX[l];
-          lineX2[l]=lineX2[l]+lineVX[l];
-        }
-        if (lineMoveFLAGX[l]==1) {
-          lineX1[l]=lineX1[l]-lineVX[l];
-          lineX2[l]=lineX2[l]-lineVX[l];
-        }
-      }
-      //ラインのy座標移動判定
-      if (lineY1[l]<=lineY2[l]) {
-        lineH[l]=lineY2[l]-lineY1[l];
-        if (lineY2[l]>height) {
-          lineY1[l]=height-lineH[l];
-          lineY2[l]=height;
-          lineMoveFLAGY[l]=1;
-        }
-        if (lineY1[l]<0) {
-          lineY1[l]=0;
-          lineY2[l]=0+lineH[l];
-          lineMoveFLAGY[l]=0;
-        }
-        if (lineMoveFLAGY[l]==0) {
-          lineY1[l]=lineY1[l]+lineVY[l];
-          lineY2[l]=lineY2[l]+lineVY[l];
-        }
-        if (lineMoveFLAGY[l]==1) {
-          lineY1[l]=lineY1[l]-lineVY[l];
-          lineY2[l]=lineY2[l]-lineVY[l];
-        }
-      }
-      if (lineY1[l]>lineY2[l]) {
-        lineH[l]=lineY1[l]-lineY2[l];
-        if (lineY1[l]>height) {
-          lineY1[l]=height;
-          lineY2[l]=height-lineH[l];
-          lineMoveFLAGY[l]=1;
-        }
-        if (lineY2[l]<0) {
-          lineY1[l]=0+lineH[l];
-          lineY2[l]=0;
-          lineMoveFLAGY[l]=0;
-        }
-        if (lineMoveFLAGY[l]==0) {
-          lineY1[l]=lineY1[l]+lineVY[l];
-          lineY2[l]=lineY2[l]+lineVY[l];
-        }
-        if (lineMoveFLAGY[l]==1) {
-          lineY1[l]=lineY1[l]-lineVY[l];
-          lineY2[l]=lineY2[l]-lineVY[l];
-        }
-      }
-    }
-    line(lineX1[l], lineY1[l], lineX2[l], lineY2[l]);
-  }
-  strokeWeight(2);
-}
-/////////ラインの始点と長さを決定///////////////////////////////////////////////
-void lineDragged() {
-  if (lineFLAG[L]==0) {
-    if (scaleMouseX>100 || scaleMouseX<0 || scaleMouseY>60 || scaleMouseY<30) {
-      if (lineFlag[L]==0) {
-        lineX1[L]=scaleMouseX;
-        lineY1[L]=scaleMouseY;
-        lineFlag[L]=1;
-      }
-    }
-    if (lineFlag[L]==1) {
-      lineX2[L]=scaleMouseX;
-      lineY2[L]=scaleMouseY;
-    }
-  }
-}
-///////////ラインの終点を決定//////////////////////////////////////////////////
-void lineReleased() {
-  if (lineFLAG[L]==0) {
-    lineX2[L]=scaleMouseX;
-    lineY2[L]=scaleMouseY;
-    lineFLAG[L]=1;
-    if (lineX1[L]!=0 && lineY1[L]!=0) {
-      output.println("  lineX1["+L+"]="+lineX1[L]+";");
-      output.println("  lineY1["+L+"]="+lineY1[L]+";");
-      output.println("  lineX2["+L+"]="+lineX2[L]+";");
-      output.println("  lineY2["+L+"]="+lineY2[L]+";");
-    }
-  }
-  L++;
-}
+
 //////////////////////////////////////////////////////////////////////////////
 //////////////////レクトを描くための要素/////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
@@ -260,100 +83,7 @@ int [] rectMoveFlag = new int [500];     //レクトの移動フラグ
 int [] rectMoveFLAGX = new int [500];    //レクトのx向き移動フラグ
 int [] rectMoveFLAGY = new int [500];    //レクトのy向き移動フラグ
 
-/////////////レクトを描く//////////////////////////////////////////////////////
-void drawRect() {
-  for (int r=0; r<500; r++) {
-    if (rectX[r]==0 && rectY[r]==0) {
-      continue;
-    }
-    if (rectFillFlag[r]==1) {
-      fill(0, 255, 0, 80);
-    } else {
-      noFill();
-    }
-    stroke(0);
-    if (rectMoveFlag[r]==1) {
-      //レクトのx座標移動判定
-      rectX2[r]=rectX[r]+rectW[r];
-      if (rectX[r]<=rectX2[r]) {
-        if (rectX2[r]>width) {
-          rectX[r]=width-rectW[r];
-          rectMoveFLAGX[r]=1;
-        }
-        if (rectX[r]<0) {
-          rectX[r]=0;
-          rectMoveFLAGX[r]=0;
-        }
-      } else if (rectX[r]>rectX2[r]) {
-        if (rectX[r]>width) {
-          rectX[r]=width;
-          rectMoveFLAGX[r]=1;
-        }
-        if (rectX2[r]<0) {
-          rectX[r]=0-rectW[r];
-          rectMoveFLAGX[r]=0;
-        }
-      }
-      if (rectMoveFLAGX[r]==0) rectX[r]=rectX[r]+rectVX[r];
-      if (rectMoveFLAGX[r]==1) rectX[r]=rectX[r]-rectVX[r];
-      //レクトのy座標移動判定
-      rectY2[r]=rectY[r]+rectH[r];
-      if (rectY[r]<=rectY2[r]) {
-        if (rectY2[r]>height) {
-          rectY[r]=height-rectH[r];
-          rectMoveFLAGY[r]=1;
-        }
-        if (rectY[r]<0) {
-          rectY[r]=0;
-          rectMoveFLAGY[r]=0;
-        }
-      } else if (rectY[r]>rectY2[r]) {
-        if (rectY[r]>height) {
-          rectY[r]=height;
-          rectMoveFLAGY[r]=1;
-        }
-        if (rectY2[r]<0) {
-          rectY[r]=0-rectH[r];
-          rectMoveFLAGY[r]=0;
-        }
-      }
-      if (rectMoveFLAGY[r]==0) rectY[r]=rectY[r]+rectVY[r];
-      if (rectMoveFLAGY[r]==1) rectY[r]=rectY[r]-rectVY[r];
-    }
 
-    rect(rectX[r], rectY[r], rectW[r], rectH[r]);
-  }
-}
-////////レクトの始点と大きさを選択//////////////////////////////////////////////
-void rectDragged() {
-  if (rectFLAG[R]==0) {
-    if (scaleMouseX>100 || scaleMouseX<0 || scaleMouseY>90 || scaleMouseY<60) {
-      if (rectFlag[R]==0) {
-        rectX[R]=scaleMouseX;
-        rectY[R]=scaleMouseY;
-        rectFlag[R]=1;
-      }
-    }
-    if (rectFlag[R]==1) {
-      rectW[R]=scaleMouseX-rectX[R];
-      rectH[R]=scaleMouseY-rectY[R];
-    }
-  }
-}
-///////////レクトの大きさを決定////////////////////////////////////////////////
-void rectReleased() {
-  if (rectFLAG[R]==0) {
-    rectW[R]=scaleMouseX-rectX[R];
-    rectH[R]=scaleMouseY-rectY[R];
-    if (rectX[R]!=0 && rectY[R]!=0) {
-      output.println("  rectX["+R+"]="+rectX[R]+";");
-      output.println("  rectY["+R+"]="+rectY[R]+";");
-      output.println("  rectW["+R+"]="+rectW[R]+";");
-      output.println("  rectH["+R+"]="+rectH[R]+";");
-    }
-  }
-  R++;
-}
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////*バーテックスを描くための要素*/////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -380,122 +110,7 @@ int [] vertexMoveFlag = new int [500];   //バーテックスの移動フラグ
 int [] vertexMoveFLAGX = new int [500];  //バーテックスのx向き移動フラグ
 int [] vertexMoveFLAGY = new int [500];  //バーテックスのy向き移動フラグ
 
-///////////バーテックスを描く/////////////////////////////////////////////////////
-void drawVertex() {
-  for (int v1=0; v1<500; v1++) {
-    vertexCount=0;
-    if (beginShapeFLAG[v1]==0) {
-      break;
-    }
-    if (vertexFillFlag[v1]==1) {
-      fill(0, 255, 255, 80);
-    } else {
-      noFill();
-    }
-    stroke(0);
-    beginShape();
-    for (int v2=0; v2<500; v2++) {
-      if (vertexX[v1][v2]==0 && vertexY[v1][v2]==0) {
-        if (lastVertexFlag[v1]==1) {
-          vertex(vertexX[v1][0], vertexY[v1][0]);
-          vertexCount++;
-        }
-        break;
-      }
-      vertex(vertexX[v1][v2], vertexY[v1][v2]);
-      vertexCount++;
-    }
-    endShape();
-    //跳ね返り判定
-    if (lastVertexFlag[v1]==1 && vertexMoveFlag[v1]==1) {
-      //上下左右端の座標取得
-      MaxX[v1] = vertexX[v1][0];
-      minX[v1] = vertexX[v1][0];
-      MaxY[v1] = vertexY[v1][0];
-      minY[v1] = vertexY[v1][0];
-      for (int v=0; v<vertexCount-1; v++) {
-        if (MaxX[v1]<vertexX[v1][v]) MaxX[v1]=vertexX[v1][v];
-        if (minX[v1]>vertexX[v1][v]) minX[v1]=vertexX[v1][v];
-        if (MaxY[v1]<vertexY[v1][v]) MaxY[v1]=vertexY[v1][v];
-        if (minY[v1]>vertexY[v1][v]) minY[v1]=vertexY[v1][v];
-      }
-      for (int v=0; v<vertexCount-1; v++) {
-        DistX[v1][v]=MaxX[v1]-vertexX[v1][v];
-        DistY[v1][v]=MaxY[v1]-vertexY[v1][v];
-        distX[v1][v]=vertexX[v1][v]-minX[v1];
-        distY[v1][v]=vertexY[v1][v]-minY[v1];
-      }
-      //xの跳ね返り判定
-      if (MaxX[v1]>width) {
-        for (int v=0; v<vertexCount-1; v++) {
-          vertexX[v1][v]=width-DistX[v1][v];
-        }
-        vertexMoveFLAGX[v1]=1;
-      }
-      if (minX[v1]<0) {
-        for (int v=0; v<vertexCount-1; v++) {
-          vertexX[v1][v]=0+distX[v1][v];
-        }
-        vertexMoveFLAGX[v1]=0;
-      }
-      if (vertexMoveFLAGX[v1]==0) {
-        for (int v=0; v<vertexCount-1; v++) {
-          vertexX[v1][v]=vertexX[v1][v]+vertexVX[v1];
-        }
-      }
-      if (vertexMoveFLAGX[v1]==1) {
-        for (int v=0; v<vertexCount-1; v++) {
-          vertexX[v1][v]=vertexX[v1][v]-vertexVX[v1];
-        }
-      }
-      //yの跳ね返り判定
-      if (MaxY[v1]>height) {
-        for (int v=0; v<vertexCount-1; v++) {
-          vertexY[v1][v]=height-DistY[v1][v];
-        }
-        vertexMoveFLAGY[v1]=1;
-      }
-      if (minY[v1]<0) {
-        for (int v=0; v<vertexCount-1; v++) {
-          vertexY[v1][v]=0+distY[v1][v];
-        }
-        vertexMoveFLAGY[v1]=0;
-      }
-      if (vertexMoveFLAGY[v1]==0) {
-        for (int v=0; v<vertexCount-1; v++) {
-          vertexY[v1][v]=vertexY[v1][v]+vertexVY[v1];
-        }
-      }
-      if (vertexMoveFLAGY[v1]==1) {
-        for (int v=0; v<vertexCount-1; v++) {
-          vertexY[v1][v]=vertexY[v1][v]-vertexVY[v1];
-        }
-      }
-    }
-  }
-}
-/////////バーテックスの頂点座標を決定///////////////////////////////////////////////
-void vertexPressed() {
-  if (scaleMouseX>100 || scaleMouseX<0 || scaleMouseY>120 || scaleMouseY<90) {
-    vertexFlag[U]=1;
-    if (vertexFlag[U]==1) {
-      if (beginShapeFLAG[U]==0) {
-        beginShapeFLAG[U]=1;
-        vertexX[U][V]=scaleMouseX;
-        vertexY[U][V]=scaleMouseY;
-        output.println("  vertexX["+U+"]["+V+"]="+vertexX[U][V]+";");
-        output.println("  vertexY["+U+"]["+V+"]="+vertexY[U][V]+";");
-        V++;
-      } else if (beginShapeFLAG[U]==1) {
-        vertexX[U][V]=scaleMouseX;
-        vertexY[U][V]=scaleMouseY;
-        output.println("  vertexX["+U+"]["+V+"]="+vertexX[U][V]+";");
-        output.println("  vertexY["+U+"]["+V+"]="+vertexY[U][V]+";");
-        V++;
-      }
-    }
-  }
-}
+
 /////////////////////////////////////////////////////////////////////////////
 /////////////////*エリプスを描くための要素*/////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
@@ -513,99 +128,7 @@ int [] ellipMoveFlag = new int [500];    //エリプスの移動フラグ
 int [] ellipMoveFLAGX = new int [500];   //エリプスのx向き移動フラグ
 int [] ellipMoveFLAGY = new int [500];   //エリプスのy向き移動フラグ
 
-/////////////エリプスを描く//////////////////////////////////////////////////////
-void drawEllipse() {
-  for (int e=0; e<500; e++) {
-    if (ellipX[e]==0 && ellipY[e]==0) {
-      continue;
-    }
-    if (ellipFillFlag[e]==1) {
-      fill(255, 255, 0, 80);
-    } else {
-      noFill();
-    }
-    if (ellipMoveFlag[e]==1) {
-      if (ellipR1[e]>=0) {
-        //エリプスのx座標移動判定
-        if (ellipX[e]>width-ellipR1[e]) {
-          ellipX[e]=width-ellipR1[e];
-          ellipMoveFLAGX[e]=1;
-        }
-        if (ellipX[e]<0+ellipR1[e]) {
-          ellipX[e]=0+ellipR1[e];
-          ellipMoveFLAGX[e]=0;
-        }
-      }
-      if (ellipR1[e]<0) {
-        if (ellipX[e]>width+ellipR1[e]) {
-          ellipX[e]=width+ellipR1[e];
-          ellipMoveFLAGX[e]=1;
-        }
-        if (ellipX[e]<0-ellipR1[e]) {
-          ellipX[e]=0-ellipR1[e];
-          ellipMoveFLAGX[e]=0;
-        }
-      }
-      if (ellipMoveFLAGX[e]==0) ellipX[e]=ellipX[e]+ellipVX[e];
-      if (ellipMoveFLAGX[e]==1) ellipX[e]=ellipX[e]-ellipVX[e];
-      //エリプスのy座標移動判定
-      if (ellipR2[e]>=0) {
-        if (ellipY[e]>height-ellipR2[e]) {
-          ellipY[e]=height-ellipR2[e];
-          ellipMoveFLAGY[e]=1;
-        }
-        if (ellipY[e]<0+ellipR2[e]) {
-          ellipY[e]=0+ellipR2[e];
-          ellipMoveFLAGY[e]=0;
-        }
-      }
-      if (ellipR2[e]<0) {
-        if (ellipY[e]>height+ellipR2[e]) {
-          ellipY[e]=height+ellipR2[e];
-          ellipMoveFLAGY[e]=1;
-        }
-        if (ellipY[e]<0-ellipR2[e]) {
-          ellipY[e]=0-ellipR2[e];
-          ellipMoveFLAGY[e]=0;
-        }
-      }
-      if (ellipMoveFLAGY[e]==0) ellipY[e]=ellipY[e]+ellipVY[e];
-      if (ellipMoveFLAGY[e]==1) ellipY[e]=ellipY[e]-ellipVY[e];
-    }
-    stroke(0);
-    ellipse(ellipX[e], ellipY[e], 2*ellipR1[e], 2*ellipR2[e]);
-  }
-}
-/////////エリプスの中心と半径を選択///////////////////////////////////////////////
-void ellipDragged() {
-  if (ellipFLAG[E]==0) {
-    if (scaleMouseX>100 || scaleMouseX<0 || scaleMouseY>150 || scaleMouseY<120) {
-      if (ellipFlag[E]==0) {
-        ellipX[E]=scaleMouseX;
-        ellipY[E]=scaleMouseY;
-        ellipFlag[E]=1;
-      }
-    }
-    if (ellipFlag[E]==1) {
-      ellipR1[E]=scaleMouseX-ellipX[E];
-      ellipR2[E]=scaleMouseY-ellipY[E];
-    }
-  }
-}
-/////////エリプスの大きさを決定////////////////////////////////////////////////
-void ellipReleased() {
-  if (ellipFLAG[E]==0) {
-    ellipR1[E]=scaleMouseX-ellipX[E];
-    ellipR2[E]=scaleMouseY-ellipY[E];
-    if (ellipX[E]!=0 && ellipY[E]!=0) {
-      output.println("  ellipX["+E+"]="+ellipX[E]+";");
-      output.println("  ellipY["+E+"]="+ellipY[E]+";");
-      output.println("  ellipR1["+E+"]="+ellipR1[E]+";");
-      output.println("  ellipR2["+E+"]="+ellipR2[E]+";");
-    }
-  }
-  E++;
-}
+
 //////////////////////////////////////////////////////////////////////////////
 //////////////////フィルを描くための要素/////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
@@ -618,120 +141,7 @@ float [] fillY2 = new float [500];        //フィルの右下のy座標
 int [] fillFlag = new int [500];      //始点の保存とドラッグするためのフラグ
 int [] fillFLAG = new int [500];      //次のフィルに移るためのフラグ
 int F;                                //配列を選択する変数
-/////////////フィルを描く//////////////////////////////////////////////////////
-void drawFill() {
-  for (int f=0; f<500; f++) {
-    if (fillX[f]==0 && fillY[f]==0) {
-      continue;
-    }
-    if (fillFinishFlag[f]==0) {
-      stroke(0, 255, 0);
-    } else if (fillFinishFlag[f]==1) {
-      noStroke();
-    }
-    noFill();
-    rect(fillX[f], fillY[f], fillW[f], fillH[f]);
-  }
-}
-////////フィルの始点と大きさを選択//////////////////////////////////////////////
-void fillDragged() {
-  if (fillFLAG[F]==0) {
-    if (scaleMouseX>100 || scaleMouseX<0 || scaleMouseY>180 || scaleMouseY<1500) {
-      if (fillFlag[F]==0) {
-        fillX[F]=scaleMouseX;
-        fillY[F]=scaleMouseY;
-        fillFlag[F]=1;
-      }
-      if (fillFlag[F]==1) {
-        fillW[F]=scaleMouseX-fillX[F];
-        fillH[F]=scaleMouseY-fillY[F];
-      }
-    }
-  }
-}
-///////////フィルの大きさを決定////////////////////////////////////////////////
-void fillReleased() {
-  if (fillFLAG[F]==0) {
-    fillW[F]=scaleMouseX-fillX[F];
-    fillH[F]=scaleMouseY-fillY[F];
-    if (fillX[F]!=0 && fillY[F]!=0) {
-      fillX2[F]=fillX[F]+fillW[F];
-      fillY2[F]=fillY[F]+fillH[F];
-      //それぞれの図形の主要な点がフィルの枠内に入ると色を塗るフラグが立つ
-      for (int f=0; f<5000; f++) {
-        if (pointX[f]<fillX2[F] && pointX[f]>fillX[F] && pointY[f]<fillY2[F] && pointY[f]>fillY[F]) {
-          output.println("  pointStrokeFlag["+f+"]=1;");
-          pointStrokeFlag[f]=1;
-        } else if (pointX[f]<fillX[F] && pointX[f]>fillX2[F] && pointY[f]<fillY2[F] && pointY[f]>fillY[F]) {
-          output.println("  pointStrokeFlag["+f+"]=1;");
-          pointStrokeFlag[f]=1;
-        } else if (pointX[f]<fillX2[F] && pointX[f]>fillX[F] && pointY[f]<fillY[F] && pointY[f]>fillY2[F]) {
-          output.println("  pointStrokeFlag["+f+"]=1;");
-          pointStrokeFlag[f]=1;
-        } else if (pointX[f]<fillX[F] && pointX[f]>fillX2[F] && pointY[f]<fillY[F] && pointY[f]>fillY2[F]) {
-          output.println("  pointStrokeFlag["+f+"]=1;");
-          pointStrokeFlag[f]=1;
-        }
-      }
-      for (int f=0; f<500; f++) {
-        if (lineX1[f]<fillX2[F] && lineX1[f]>fillX[F] && lineY1[f]<fillY2[F] && lineY1[f]>fillY[F]) {
-          output.println("  lineStrokeFlag["+f+"]=1;");
-          lineStrokeFlag[f]=1;
-        } else if (lineX1[f]<fillX[F] && lineX1[f]>fillX2[F] && lineY1[f]<fillY2[F] && lineY1[f]>fillY[F]) {
-          output.println("  lineStrokeFlag["+f+"]=1;");
-          lineStrokeFlag[f]=1;
-        } else if (lineX1[f]<fillX2[F] && lineX1[f]>fillX[F] && lineY1[f]<fillY[F] && lineY1[f]>fillY2[F]) {
-          output.println("  lineStrokeFlag["+f+"]=1;");
-          lineStrokeFlag[f]=1;
-        } else if (lineX1[f]<fillX[F] && lineX1[f]>fillX2[F] && lineY1[f]<fillY[F] && lineY1[f]>fillY2[F]) {
-          output.println("  lineStrokeFlag["+f+"]=1;");
-          lineStrokeFlag[f]=1;
-        }
-        if (rectX[f]<fillX2[F] && rectX[f]>fillX[F] && rectY[f]<fillY2[F] && rectY[f]>fillY[F]) {
-          output.println("  rectFillFlag["+f+"]=1;");
-          rectFillFlag[f]=1;
-        } else if (rectX[f]<fillX[F] && rectX[f]>fillX2[F] && rectY[f]<fillY2[F] && rectY[f]>fillY[F]) {
-          output.println("  rectFillFlag["+f+"]=1;");
-          rectFillFlag[f]=1;
-        } else if (rectX[f]<fillX2[F] && rectX[f]>fillX[F] && rectY[f]<fillY[F] && rectY[f]>fillY2[F]) {
-          output.println("  rectFillFlag["+f+"]=1;");
-          rectFillFlag[f]=1;
-        } else if (rectX[f]<fillX[F] && rectX[f]>fillX2[F] && rectY[f]<fillY[F] && rectY[f]>fillY2[F]) {
-          output.println("  rectFillFlag["+f+"]=1;");
-          rectFillFlag[f]=1;
-        }
-        if (vertexX[f][0]<fillX2[F] && vertexX[f][0]>fillX[F] && vertexY[f][0]<fillY2[F] && vertexY[f][0]>fillY[F]) {
-          output.println("  vertexFillFlag["+f+"]=1;");
-          vertexFillFlag[f]=1;
-        } else if (vertexX[f][0]<fillX[F] && vertexX[f][0]>fillX2[F] && vertexY[f][0]<fillY2[F] && vertexY[f][0]>fillY[F]) {
-          output.println("  vertexFillFlag["+f+"]=1;");
-          vertexFillFlag[f]=1;
-        } else if (vertexX[f][0]<fillX2[F] && vertexX[f][0]>fillX[F] && vertexY[f][0]<fillY[F] && vertexY[f][0]>fillY2[F]) {
-          output.println("  vertexFillFlag["+f+"]=1;");
-          vertexFillFlag[f]=1;
-        } else if (vertexX[f][0]<fillX[F] && vertexX[f][0]>fillX2[F] && vertexY[f][0]<fillY[F] && vertexY[f][0]>fillY2[F]) {
-          output.println("  vertexFillFlag["+f+"]=1;");
-          vertexFillFlag[f]=1;
-        }
-        if (ellipX[f]<fillX2[F] && ellipX[f]>fillX[F] && ellipY[f]<fillY2[F] && ellipY[f]>fillY[F]) {
-          output.println("  ellipFillFlag["+f+"]=1;");
-          ellipFillFlag[f]=1;
-        } else if (ellipX[f]<fillX[F] && ellipX[f]>fillX2[F] && ellipY[f]<fillY2[F] && ellipY[f]>fillY[F]) {
-          output.println("  ellipFillFlag["+f+"]=1;");
-          ellipFillFlag[f]=1;
-        } else if (ellipX[f]<fillX2[F] && ellipX[f]>fillX[F] && ellipY[f]<fillY[F] && ellipY[f]>fillY2[F]) {
-          output.println("  ellipFillFlag["+f+"]=1;");
-          ellipFillFlag[f]=1;
-        } else if (ellipX[f]<fillX[F] && ellipX[f]>fillX2[F] && ellipY[f]<fillY[F] && ellipY[f]>fillY2[F]) {
-          output.println("  ellipFillFlag["+f+"]=1;");
-          ellipFillFlag[f]=1;
-        }
-      }
-      fillFinishFlag[F]=1;
-    }
-  }
-  F++;
-}
+
 //////////////////////////////////////////////////////////////////////////////
 //////////////////ムーブを描くための要素/////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
@@ -743,8 +153,7 @@ float [] moveX2 = new float [500];        //ムーブの右下のx座標
 float [] moveY2 = new float [500];        //ムーブの右下のy座標
 int [] moveFlag = new int [500];      //始点の保存とドラッグするためのフラグ
 int [] moveFLAG = new int [500];      //次のムーブに移るためのフラグ
-int M;                                //配列を選択する変数
-/////////////ムーブを描く//////////////////////////////////////////////////////
+int M;                       /////////////ムーブを描く//////////////////////////////////////////////////////
 void drawMove() {
   for (int m=0; m<500; m++) {
     if (moveX[m]==0 && moveY[m]==0) {
@@ -858,11 +267,20 @@ void moveReleased() {
     }
   }
   M++;
-}
+}         //配列を選択する変数
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 void setup() {
   size(1000, 600);
+
+  pointClass = new Point();
+  lineClass = new Line();
+  rectClass = new Rect();
+  vertexClass = new Vertex();
+  ellipseClass = new Ellipse();
+  fillClass = new Fill();
+  moveClass = new Move();
 
   output = createWriter("Generate/GenerateCode"+hour()+minute()+second()+".pde");
 
@@ -1006,24 +424,24 @@ void setup() {
 void draw() {
   println(mouseX+", "+mouseY);
   background(200);
-  
+
   //ここからイラスト
   strokeWeight(1);
   fill(230);
   rect(-1, 402, 1002, 118);
   fill(80);
   quad(280, 400, 230, 430, 960, 430, 920, 400);
-  
+
   fill(120);
   rect(280, 0, 640, 400);
   rect(230, 430, 730, 30);
   rect(-1, 520/*472*/, 1002, 20);
-  
-  float xMouse = 343+5*cos(atan2(mouseY-200,mouseX-600));
-  float yMouse = 493+5*sin(atan2(mouseY-200,mouseX-600));
+
+  float xMouse = 343+5*cos(atan2(mouseY-200, mouseX-600));
+  float yMouse = 493+5*sin(atan2(mouseY-200, mouseX-600));
   fill(0);
   ellipse(xMouse, yMouse, 30, 40); 
-  
+
   fill(255);
   ellipse(140, 200, 300, 300);
   ellipse(230, 160, 60, 70);
@@ -1041,7 +459,7 @@ void draw() {
   endShape();
   quad(655, 402, 636, 585, 940, 585, 875, 402);  //紙
   quad(685, 408, 680, 520, 877, 517, 855, 412);  //枠
-  
+
   fill(0, 255, 0, 50);
   quad(743, 425, 740, 465, 813, 465, 807, 425);  //頭
   quad(766, 465, 763, 504, 797, 504, 793, 465);  //胴体
@@ -1050,7 +468,7 @@ void draw() {
   rect(762, 450, 30, 10);  //口
   rect(695, 478, 7, 5);
   rect(821, 424, 7, 5);
-  
+
   fill(0, 255, 255, 50);
   beginShape();
   vertex(838, 439);
@@ -1059,7 +477,7 @@ void draw() {
   vertex(845, 447);
   vertex(838, 439);
   endShape();
-  
+
   fill(255, 255, 0, 50);
   ellipse(753, 478, 20, 20);  //右手
   ellipse(806, 478, 20, 20);  //左手
@@ -1069,27 +487,27 @@ void draw() {
   ellipse(789, 442, 5, 5);    //左目玉
   ellipse(708, 431, 10, 10);
   ellipse(847, 475, 5, 5);
-  
+
   stroke(255, 0, 0);
   strokeWeight(2);
   point(709, 453);
   point(715, 457);
   point(712, 450);
   point(717, 452);
-  
+
   stroke(0, 0, 255);
   line(835, 500, 847, 510);
   line(700, 508, 713, 504);
-  
-  
+
+
   fill(0);
   textSize(16);
   text("キャラクタを描き、いろいろな", 668, 545);
   text("図形がその周りを動くようにせよ。", 666, 570);
-  
+
   stroke(0);
   fill(0);
-  float eyeY = 160+3*sin(atan2(mouseY-160,mouseX-245));
+  float eyeY = 160+3*sin(atan2(mouseY-160, mouseX-245));
   fill(0);
   ellipse(245, eyeY, 20, 20);
   //イラスト終了
@@ -1104,13 +522,13 @@ void draw() {
   scaleMouseY = transMouseY/0.6;
 
 
-  drawPoint();    //ポイントを描く
-  drawLine();     //ラインを描く
-  drawRect();     //レクトを描く
-  drawVertex();   //バーテックスを描く
-  drawEllipse();  //エリプスを描く
-  drawFill();     //フィルを描く
-  drawMove();     //ムーブを描く
+  pointClass.display();    //ポイントを描く
+  lineClass.display();     //ラインを描く
+  rectClass.display();     //レクトを描く
+  vertexClass.display();   //バーテックスを描く
+  ellipseClass.display();
+  fillClass.display();
+  moveClass.display();     //ムーブを描く
   //選択ボタンを表示
   strokeWeight(1);
   stroke(0);
@@ -1209,7 +627,7 @@ void mousePressed() {
   }
   //バーテックスの頂点を選択
   if (vertex==1) {
-    vertexPressed();
+    vertexClass.pressed();
   }
   popMatrix();
 }
@@ -1219,12 +637,12 @@ void mouseDragged() {
   translate(300, 0);
   //scale(0.7, 0.67);
 
-  if (point==1) pointDragged();   //ポイントの座標決定
-  if (line==1) lineDragged();     //ラインの始点と長さを選択
-  if (rect==1) rectDragged();     //レクトの始点と大きさの選択
-  if (ellipse==1) ellipDragged(); //エリプスの中心と半径を選択
-  if (fill==1) fillDragged();     //フィルの始点と大きさの選択
-  if (move==1) moveDragged();     //ムーブの座標決定
+  if (point==1) pointClass.dragged();   //ポイントの座標決定
+  if (line==1) lineClass.dragged();     //ラインの始点と長さを選択
+  if (rect==1) rectClass.dragged();     //レクトの始点と大きさの選択
+  if (ellipse==1) ellipseClass.dragged(); //エリプスの中心と
+  if (fill==1)fillClass.dragged();     //フィルの始点と大
+  if (move==1)moveClass.dragged();     //ムーブの座標決定
   popMatrix();
 }
 
@@ -1232,11 +650,11 @@ void mouseReleased() {
   pushMatrix();
   translate(300, 0);
 
-  if (line==1) lineReleased();      //ラインの終点を決定
-  if (rect==1) rectReleased();      //レクトの大きさを決定
-  if (ellipse==1) ellipReleased();  //エリプスの大きさを決定
-  if (fill==1) fillReleased();      //フィルの大きさを決定
-  if (move==1) moveReleased();      //ムーブの大きさを決定
+  if (line==1) lineClass.released();      //ラインの終点を決定
+  if (rect==1) rectClass.released();      //レクトの大きさを決定
+  if (ellipse==1) ellipseClass.released();  //エリプスの大
+  fillClass.released();      //フィルの大
+  moveClass.released();      //ムーブの大きさを決定
   popMatrix();
 }
 
@@ -1245,6 +663,7 @@ void keyPressed() {
   switch(keyCode) {
   case ENTER:
     output.println("}");
+
     output.println();
     output.println("void draw(){");
     output.println("  background(255);");

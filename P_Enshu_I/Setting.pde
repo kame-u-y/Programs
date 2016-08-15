@@ -1,5 +1,4 @@
 class Setting {
-
   void setFigureMove() {
     //各図形の動きをセット
     for (int p=0; p<5000; p++) {

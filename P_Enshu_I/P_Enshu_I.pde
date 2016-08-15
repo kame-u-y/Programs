@@ -15,13 +15,6 @@ Fill fillClass;
 Move moveClass;
 Setting setting;             //いろいろなセッティング
 
-PrintWriter output;          //pdeファイルを出力するためのoutputを定義
-PFont myFont;                //日本語表記のため
-float transMouseX;           //座標軸移動後のmouseX
-float transMouseY;           //座標軸移動後のmouseY
-float scaleMouseX;           //縮小後のmouseX
-float scaleMouseY;           //縮小後のscaleMouseY
-
 int point;                   //ポイントを選択
 int line;                    //ラインを選択
 int rect;                    //レクトを選択
@@ -29,6 +22,13 @@ int vertex;                  //バーテックスを選択
 int ellipse;                 //エリプスを選択
 int fill;                    //フィルを選択
 int move;                    //ムーブを選択
+
+PrintWriter output;          //pdeファイルを出力するためのoutputを定義
+PFont myFont;                //日本語表記のため
+float transMouseX;           //座標軸移動後のmouseX
+float transMouseY;           //座標軸移動後のmouseY
+float scaleMouseX;           //縮小後のmouseX
+float scaleMouseY;           //縮小後のscaleMouseY
 
 int [] fillFinishFlag = new int [500];    //色塗り終了フラグ
 int [] moveFinishFlag = new int [500];    //移動処理完了フラグ
@@ -134,7 +134,6 @@ int M;                                    //配列を選択する変数
 
 void setup() {
   size(1000, 600);
-
   pointClass = new Point();
   lineClass = new Line();
   rectClass = new Rect();

@@ -1,4 +1,11 @@
 class Setting {
+  PFont myFont;                //日本語表記のため
+  
+  Setting(){
+    
+      myFont = createFont("AnonymousPro-Bold-48.vlw", 40);
+  }
+  
   void setFigureMove() {
     //各図形の動きをセット
     for (int p=0; p<5000; p++) {

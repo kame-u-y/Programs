@@ -15,6 +15,9 @@ Fill fillClass;
 Move moveClass;
 Setting setting;             //いろいろなセッティング
 
+PrintWriter output;          //pdeファイルを出力するためのoutputを定義
+
+
 int point;                   //ポイントを選択
 int line;                    //ラインを選択
 int rect;                    //レクトを選択
@@ -23,8 +26,6 @@ int ellipse;                 //エリプスを選択
 int fill;                    //フィルを選択
 int move;                    //ムーブを選択
 
-PrintWriter output;          //pdeファイルを出力するためのoutputを定義
-PFont myFont;                //日本語表記のため
 float transMouseX;           //座標軸移動後のmouseX
 float transMouseY;           //座標軸移動後のmouseY
 float scaleMouseX;           //縮小後のmouseX
@@ -145,7 +146,6 @@ void setup() {
 
   setting.setOutput();        //テキストに出力
   setting.setFigureMove();    //図形の動き方のセッティング
-  myFont = createFont("AnonymousPro-Bold-48.vlw", 40);
 }
 
 void draw() {

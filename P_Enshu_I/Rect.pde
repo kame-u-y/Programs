@@ -1,94 +1,117 @@
 class Rect {
+
+  float rectX;         //レクトの始点x座標
+  float rectY;         //レクトの始点y座標
+  float rectW;         //レクトの幅
+  float rectH;         //レクトの高さ
+  float rectX2;        //レクトの終点x座標
+  float rectY2;        //レクトの終点y座標
+  float rectVX;        //レクトのx座標方向速度
+  float rectVY;        //レクトのy座標方向速度
+  int rectFlag;          //始点の保存とドラッグするためのフラグ
+  int rectFLAG;          //次のレクトに移るためのフラグ
+  int rectFillFlag;      //レクトの色塗りフラグ
+  int rectMoveFlag;      //レクトの移動フラグ
+  int rectMoveFLAGX;     //レクトのx向き移動フラグ
+  int rectMoveFLAGY;     //レクトのy向き移動フラグ
+
+  Rect() {
+    for (int r=0; r<500; r++) {
+      rectVX=(float)random(1, 3);
+      rectVY=(float)random(1, 3);
+      rectMoveFLAGX=(int)random(2);
+      rectMoveFLAGY=(int)random(2);
+    }
+  }
+
+
   /////////////レクトを描く//////////////////////////////////////////////////////
   void display() {
-    for (int r=0; r<500; r++) {
-      if (rectX[r]==0 && rectY[r]==0) {
-        continue;
-      }
-      if (rectFillFlag[r]==1) {
+    if (rectX!=0 && rectY!=0) {
+      if (rectFillFlag==1) {
         fill(0, 255, 0, 80);
       } else {
         noFill();
       }
       stroke(0);
-      if (rectMoveFlag[r]==1) {
+      if (rectMoveFlag==1) {
         //レクトのx座標移動判定
-        rectX2[r]=rectX[r]+rectW[r];
-        if (rectX[r]<=rectX2[r]) {
-          if (rectX2[r]>width) {
-            rectX[r]=width-rectW[r];
-            rectMoveFLAGX[r]=1;
+        rectX2=rectX+rectW;
+        if (rectX<=rectX2) {
+          if (rectX2>width) {
+            rectX=width-rectW;
+            rectMoveFLAGX=1;
           }
-          if (rectX[r]<0) {
-            rectX[r]=0;
-            rectMoveFLAGX[r]=0;
+          if (rectX<0) {
+            rectX=0;
+            rectMoveFLAGX=0;
           }
-        } else if (rectX[r]>rectX2[r]) {
-          if (rectX[r]>width) {
-            rectX[r]=width;
-            rectMoveFLAGX[r]=1;
+        } else if (rectX>rectX2) {
+          if (rectX>width) {
+            rectX=width;
+            rectMoveFLAGX=1;
           }
-          if (rectX2[r]<0) {
-            rectX[r]=0-rectW[r];
-            rectMoveFLAGX[r]=0;
+          if (rectX2<0) {
+            rectX=0-rectW;
+            rectMoveFLAGX=0;
           }
         }
-        if (rectMoveFLAGX[r]==0) rectX[r]=rectX[r]+rectVX[r];
-        if (rectMoveFLAGX[r]==1) rectX[r]=rectX[r]-rectVX[r];
+        if (rectMoveFLAGX==0) rectX=rectX+rectVX;
+        if (rectMoveFLAGX==1) rectX=rectX-rectVX;
         //レクトのy座標移動判定
-        rectY2[r]=rectY[r]+rectH[r];
-        if (rectY[r]<=rectY2[r]) {
-          if (rectY2[r]>height) {
-            rectY[r]=height-rectH[r];
-            rectMoveFLAGY[r]=1;
+        rectY2=rectY+rectH;
+        if (rectY<=rectY2) {
+          if (rectY2>height) {
+            rectY=height-rectH;
+            rectMoveFLAGY=1;
           }
-          if (rectY[r]<0) {
-            rectY[r]=0;
-            rectMoveFLAGY[r]=0;
+          if (rectY<0) {
+            rectY=0;
+            rectMoveFLAGY=0;
           }
-        } else if (rectY[r]>rectY2[r]) {
-          if (rectY[r]>height) {
-            rectY[r]=height;
-            rectMoveFLAGY[r]=1;
+        } else if (rectY>rectY2) {
+          if (rectY>height) {
+            rectY=height;
+            rectMoveFLAGY=1;
           }
-          if (rectY2[r]<0) {
-            rectY[r]=0-rectH[r];
-            rectMoveFLAGY[r]=0;
+          if (rectY2<0) {
+            rectY=0-rectH;
+            rectMoveFLAGY=0;
           }
         }
-        if (rectMoveFLAGY[r]==0) rectY[r]=rectY[r]+rectVY[r];
-        if (rectMoveFLAGY[r]==1) rectY[r]=rectY[r]-rectVY[r];
+        if (rectMoveFLAGY==0) rectY=rectY+rectVY;
+        if (rectMoveFLAGY==1) rectY=rectY-rectVY;
       }
 
-      rect(rectX[r], rectY[r], rectW[r], rectH[r]);
+      rect(rectX, rectY, rectW, rectH);
     }
   }
   ////////レクトの始点と大きさを選択//////////////////////////////////////////////
   void dragged() {
-    if (rectFLAG[R]==0) {
+    if (rectClass[R].rectFLAG==0) {
       if (scaleMouseX>100 || scaleMouseX<0 || scaleMouseY>90 || scaleMouseY<60) {
-        if (rectFlag[R]==0) {
-          rectX[R]=scaleMouseX;
-          rectY[R]=scaleMouseY;
-          rectFlag[R]=1;
+        if (rectClass[R].rectFlag==0) {
+          rectClass[R].rectX=scaleMouseX;
+          rectClass[R].rectY=scaleMouseY;
+          rectClass[R].rectFlag=1;
         }
       }
-      if (rectFlag[R]==1) {
-        rectW[R]=scaleMouseX-rectX[R];
-        rectH[R]=scaleMouseY-rectY[R];
+      if (rectClass[R].rectFlag==1) {
+        rectClass[R].rectW=scaleMouseX-rectClass[R].rectX;
+        rectClass[R].rectH=scaleMouseY-rectClass[R].rectY;
       }
     }
   }
   ///////////レクトの大きさを決定////////////////////////////////////////////////
   void released() {
-    if (rectFLAG[R]==0) {
-      rectW[R]=scaleMouseX-rectX[R];
-      rectH[R]=scaleMouseY-rectY[R];
-      if (rectX[R]!=0 && rectY[R]!=0) {
-        output.println("  rectX["+R+"]="+rectX[R]+";");
-        output.println("  rectY["+R+"]="+rectY[R]+";");
-        output.println("  rectW["+R+"]="+rectW[R]+";");
-        output.println("  rectH["+R+"]="+rectH[R]+";");
+    if (rectClass[R].rectFLAG==0) {
+      rectClass[R].rectW=scaleMouseX-rectClass[R].rectX;
+      rectClass[R].rectH=scaleMouseY-rectClass[R].rectY;
+      if (rectClass[R].rectX!=0 && rectClass[R].rectY!=0) {
+        output.println("  rectX["+R+"]="+rectClass[R].rectX+";");
+        output.println("  rectY["+R+"]="+rectClass[R].rectY+";");
+        output.println("  rectW["+R+"]="+rectClass[R].rectW+";");
+        output.println("  rectH["+R+"]="+rectClass[R].rectH+";");
       }
     }
     R++;

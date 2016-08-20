@@ -1,43 +1,15 @@
 class Setting {
   PFont myFont;                //日本語表記のため
-  
-  Setting(){
-    
-      myFont = createFont("AnonymousPro-Bold-48.vlw", 40);
-  }
-  
-  void setFigureMove() {
-    //各図形の動きをセット
-    for (int p=0; p<5000; p++) {
-      pointVX[p]=(float)random(1, 3);
-      pointVY[p]=(float)random(1, 3);
-      pointMoveFLAGX[p]=(int)random(2);
-      pointMoveFLAGY[p]=(int)random(2);
-    }
-    for (int l=0; l<500; l++) {
-      lineVX[l]=(float)random(1, 3);
-      lineVY[l]=(float)random(1, 3);
-      lineMoveFLAGX[l]=(int)random(2);
-      lineMoveFLAGY[l]=(int)random(2);
-    }
-    for (int r=0; r<500; r++) {
-      rectVX[r]=(float)random(1, 3);
-      rectVY[r]=(float)random(1, 3);
-      rectMoveFLAGX[r]=(int)random(2);
-      rectMoveFLAGY[r]=(int)random(2);
-    }
-    for (int v=0; v<500; v++) {
-      vertexVX[v]=(float)random(1, 3);
-      vertexVY[v]=(float)random(1, 3);
-      vertexMoveFLAGX[v]=(int)random(2);
-      vertexMoveFLAGY[v]=(int)random(2);
-    }
-    for (int e=0; e<500; e++) {
-      ellipVX[e]=(float)random(1, 3);
-      ellipVY[e]=(float)random(1, 3);
-      ellipMoveFLAGX[e]=(int)random(2);
-      ellipMoveFLAGY[e]=(int)random(2);
-    }
+  int point;                   //ポイントを選択
+  int line;                    //ラインを選択
+  int rect;                    //レクトを選択
+  int vertex;                  //バーテックスを選択
+  int ellipse;                 //エリプスを選択
+  int fill;                    //フィルを選択
+  int move;                    //ムーブを選択
+
+  Setting() {
+    myFont = createFont("AnonymousPro-Bold-48.vlw", 40);
   }
 
   void senery() {
@@ -47,17 +19,14 @@ class Setting {
     rect(-1, 402, 1002, 118);
     fill(80);
     quad(280, 400, 230, 430, 960, 430, 920, 400);
-
     fill(120);
     rect(280, 0, 640, 400);
     rect(230, 430, 730, 30);
     rect(-1, 520/*472*/, 1002, 20);
-
     float xMouse = 343+5*cos(atan2(mouseY-200, mouseX-600));
     float yMouse = 493+5*sin(atan2(mouseY-200, mouseX-600));
     fill(0);
     ellipse(xMouse, yMouse, 30, 40); 
-
     fill(255);
     ellipse(140, 200, 300, 300);
     ellipse(230, 160, 60, 70);
@@ -75,7 +44,6 @@ class Setting {
     endShape();
     quad(655, 402, 636, 585, 940, 585, 875, 402);  //紙
     quad(685, 408, 680, 520, 877, 517, 855, 412);  //枠
-
     fill(0, 255, 0, 50);
     quad(743, 425, 740, 465, 813, 465, 807, 425);  //頭
     quad(766, 465, 763, 504, 797, 504, 793, 465);  //胴体
@@ -84,7 +52,6 @@ class Setting {
     rect(762, 450, 30, 10);  //口
     rect(695, 478, 7, 5);
     rect(821, 424, 7, 5);
-
     fill(0, 255, 255, 50);
     beginShape();
     vertex(838, 439);
@@ -93,7 +60,6 @@ class Setting {
     vertex(845, 447);
     vertex(838, 439);
     endShape();
-
     fill(255, 255, 0, 50);
     ellipse(753, 478, 20, 20);  //右手
     ellipse(806, 478, 20, 20);  //左手
@@ -103,31 +69,25 @@ class Setting {
     ellipse(789, 442, 5, 5);    //左目玉
     ellipse(708, 431, 10, 10);
     ellipse(847, 475, 5, 5);
-
     stroke(255, 0, 0);
     strokeWeight(2);
     point(709, 453);
     point(715, 457);
     point(712, 450);
     point(717, 452);
-
     stroke(0, 0, 255);
     line(835, 500, 847, 510);
     line(700, 508, 713, 504);
-
-
     fill(0);
     textSize(16);
     text("キャラクタを描き、いろいろな", 668, 545);
     text("図形がその周りを動くようにせよ。", 666, 570);
-
     stroke(0);
     fill(0);
     float eyeY = 160+3*sin(atan2(mouseY-160, mouseX-245));
     fill(0);
     ellipse(245, eyeY, 20, 20);
     //イラスト終了
-
     //PC画面の位置設定
     pushMatrix();
     translate(300, 20);

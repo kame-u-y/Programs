@@ -87,6 +87,9 @@ class Setting {
     float eyeY = 160+3*sin(atan2(mouseY-160, mouseX-245));
     fill(0);
     ellipse(245, eyeY, 20, 20);
+    textSize(23);
+    fill(200);
+    text("If you finish drawing this sketch, please press ENTER.", 303, 375);
     //イラスト終了
     //PC画面の位置設定
     pushMatrix();
@@ -96,6 +99,8 @@ class Setting {
     scale(0.6);
     scaleMouseX = transMouseX/0.6;
     scaleMouseY = transMouseY/0.6;
+    
+    
   }
 
   void displayButton() {

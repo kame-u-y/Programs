@@ -1,12 +1,6 @@
 class Setting {
   PFont myFont;                //日本語表記のため
-  int point;                   //ポイントを選択
-  int line;                    //ラインを選択
-  int rect;                    //レクトを選択
-  int vertex;                  //バーテックスを選択
-  int ellipse;                 //エリプスを選択
-  int fill;                    //フィルを選択
-  int move;                    //ムーブを選択
+  String button;
 
   Setting() {
     myFont = createFont("AnonymousPro-Bold-48.vlw", 40);
@@ -99,8 +93,6 @@ class Setting {
     scale(0.6);
     scaleMouseX = transMouseX/0.6;
     scaleMouseY = transMouseY/0.6;
-    
-    
   }
 
   void displayButton() {
@@ -126,75 +118,19 @@ class Setting {
 
   void pressButton() {
     //ポイントを選択
-    if (scaleMouseX<100 && scaleMouseX>0 && scaleMouseY<30 && scaleMouseY>0) {
-      point=1;
-      line=0;
-      rect=0;
-      vertex=0;
-      ellipse=0;
-      fill=0;
-      move=0;
-    }
+    if (mouseInPointButton()) button = "point";
     //ラインを選択
-    if (scaleMouseX<100 && scaleMouseX>0 && scaleMouseY<60 && scaleMouseY>30) {
-      point=0;
-      line=1;
-      rect=0;
-      vertex=0;
-      ellipse=0;
-      fill=0;
-      move=0;
-    }
+    if (mouseInLineButton()) button = "line";
     //レクトを選択
-    if ( scaleMouseX<100 && scaleMouseY>0 && scaleMouseY<90 && scaleMouseY>60 ) {
-      point=0;
-      line=0;
-      rect=1;
-      vertex=0;
-      ellipse=0;
-      fill=0;
-      move=0;
-    }
+    if (mouseInRectButton()) button = "rect";
     //バーテックスを選択
-    if (scaleMouseX<100 && scaleMouseX>0 && scaleMouseY<120 && scaleMouseY>90) {
-      point=0;
-      line=0;
-      rect=0;
-      vertex=1;
-      ellipse=0;
-      fill=0;
-      move=0;
-    }
+    if (mouseInVertexButton()) button = "vertex";
     //エリプスを選択
-    if (scaleMouseX<100 && scaleMouseX>0 && scaleMouseY<150 && scaleMouseY>120) {  
-      point=0; 
-      line=0; 
-      rect=0; 
-      vertex=0; 
-      ellipse=1; 
-      fill=0;
-      move=0;
-    }
+    if (mouseInEllipseButton()) button = "ellipse";
     //フィルを選択
-    if (scaleMouseX<100 && scaleMouseX>0 && scaleMouseY<180 && scaleMouseY>150) { 
-      point=0;
-      line=0;
-      rect=0;
-      vertex=0;
-      ellipse=0;
-      fill=1;
-      move=0;
-    }
+    if (mouseInFillButton()) button = "fill";
     //ムーブを選択
-    if (scaleMouseX<100 && scaleMouseX>0 && scaleMouseY<210 && scaleMouseY>180) {
-      point=0;
-      line=0;
-      rect=0;
-      vertex=0;
-      ellipse=0;
-      fill=0;
-      move=1;
-    }
+    if (mouseInMoveButton()) button = "move";
   }
 
   void setOutput() {

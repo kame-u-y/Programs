@@ -1,158 +1,80 @@
 class Line {
-
-  float lineX1;        //ラインの始点x座標
-  float lineY1;        //ラインの始点y座標
-  float lineX2;        //ラインの終点x座標
-  float lineY2;        //ラインの終点y座標
-  float lineW;         //ラインの幅
-  float lineH;         //ラインの高さ
-  float lineVX;        //ラインのx座標方向速度
-  float lineVY;        //ラインのy座標方向速度
-  int lineFlag;          //始点の保存とドラッグのためのフラグ
-  int lineFLAG;          //次のラインに移るためのフラグ
-  int lineStrokeFlag;    //ラインの色塗りフラグ
-  int lineMoveFlag;      //ラインの移動フラグ
-  int lineMoveFLAGX;     //ラインのx向き移動フラグ
-  int lineMoveFLAGY;     //ラインのy向き移動フラグ
+  float x1;        //ラインの始点x座標
+  float y1;        //ラインの始点y座標
+  float x2;        //ラインの終点x座標
+  float y2;        //ラインの終点y座標
+  float w;         //ラインの幅
+  float h;         //ラインの高さ
+  float vx;        //ラインのx座標方向速度
+  float vy;        //ラインのy座標方向速度
+  boolean lineFlag;          //始点の保存とドラッグのためのフラグ
+  boolean lineFLAG;          //次のラインに移るためのフラグ
+  boolean strokeFlag;    //ラインの色塗りフラグ
+  boolean moveFlag;      //ラインの移動フラグ
 
   Line() {
-    for (int l=0; l<500; l++) {
-      lineVX=(float)random(1, 3);
-      lineVY=(float)random(1, 3);
-      lineMoveFLAGX=(int)random(2);
-      lineMoveFLAGY=(int)random(2);
-    }
+    vx = random(-3, 3);
+    vy = random(-3, 3);
   }
-
 
   /////////////ラインを描く//////////////////////////////////////////////////////
   void display() {
     strokeWeight(5);
-    if (lineX1!=0 && lineY1!=0) {
-      if (lineStrokeFlag==1) {
+    if (x1!=0 && y1!=0) {
+      if (strokeFlag) {
         stroke(0, 0, 255);
       } else {
         stroke(0);
       }
-      if (lineMoveFlag==1) {
-        //ラインのx座標移動判定
-        if (lineX1<=lineX2) {
-          lineW=lineX2-lineX1;
-          if (lineX2>width) {
-            lineX1=width-lineW;
-            lineX2=width;
-            lineMoveFLAGX=1;
-          }
-          if (lineX1<0) {
-            lineX1=0;
-            lineX2=0+lineW;
-            lineMoveFLAGX=0;
-          }
-          if (lineMoveFLAGX==0) {
-            lineX1=lineX1+lineVX;
-            lineX2=lineX2+lineVX;
-          }
-          if (lineMoveFLAGX==1) {
-            lineX1=lineX1-lineVX;
-            lineX2=lineX2-lineVX;
-          }
-        }
-        if (lineX1>lineX2) {
-          lineW=lineX1-lineX2;
-          if (lineX1>width) {
-            lineX1=width;
-            lineX2=width-lineW;
-            lineMoveFLAGX=1;
-          }
-          if (lineX2<0) {
-            lineX1=0+lineW;
-            lineX2=0;
-            lineMoveFLAGX=0;
-          }
-          if (lineMoveFLAGX==0) {
-            lineX1=lineX1+lineVX;
-            lineX2=lineX2+lineVX;
-          }
-          if (lineMoveFLAGX==1) {
-            lineX1=lineX1-lineVX;
-            lineX2=lineX2-lineVX;
-          }
-        }
-        //ラインのy座標移動判定
-        if (lineY1<=lineY2) {
-          lineH=lineY2-lineY1;
-          if (lineY2>height) {
-            lineY1=height-lineH;
-            lineY2=height;
-            lineMoveFLAGY=1;
-          }
-          if (lineY1<0) {
-            lineY1=0;
-            lineY2=0+lineH;
-            lineMoveFLAGY=0;
-          }
-          if (lineMoveFLAGY==0) {
-            lineY1=lineY1+lineVY;
-            lineY2=lineY2+lineVY;
-          }
-          if (lineMoveFLAGY==1) {
-            lineY1=lineY1-lineVY;
-            lineY2=lineY2-lineVY;
-          }
-        }
-        if (lineY1>lineY2) {
-          lineH=lineY1-lineY2;
-          if (lineY1>height) {
-            lineY1=height;
-            lineY2=height-lineH;
-            lineMoveFLAGY=1;
-          }
-          if (lineY2<0) {
-            lineY1=0+lineH;
-            lineY2=0;
-            lineMoveFLAGY=0;
-          }
-          if (lineMoveFLAGY==0) {
-            lineY1=lineY1+lineVY;
-            lineY2=lineY2+lineVY;
-          }
-          if (lineMoveFLAGY==1) {
-            lineY1=lineY1-lineVY;
-            lineY2=lineY2-lineVY;
-          }
-        }
-      }
-      line(lineX1, lineY1, lineX2, lineY2);
+
+      line(x1, y1, x2, y2);
     }
     strokeWeight(2);
   }
+  void move() {
+    x1 += vx;
+    x2 += vx;
+    y1 += vy;
+    y2 += vy;
+    if (x1<=x2) {
+      if (x2>width || x1<0) vx *= -1;
+    } else {
+      if (x1>width || x2<0) vx *= -1;
+    }
+    if (y1<=y2) {
+      if (y2>height || y1<0) vy *= -1;
+    } else {
+      if (y1>height || y2<0) vy *= -1;
+    }
+  }
+
   /////////ラインの始点と長さを決定///////////////////////////////////////////////
   void dragged() {
-    if (lineClass[L].lineFLAG==0) {
-      if (scaleMouseX>100 || scaleMouseX<0 || scaleMouseY>60 || scaleMouseY<30) {
-        if (lineClass[L].lineFlag==0) {
-          lineClass[L].lineX1=scaleMouseX;
-          lineClass[L].lineY1=scaleMouseY;
-          lineClass[L].lineFlag=1;
+    if (!lineFLAG) {
+      if (!mouseInLineButton()) {
+        if (!lineFlag) {
+          x1=scaleMouseX;
+          y1=scaleMouseY;
+          lineFlag=true;
         }
       }
-      if (lineClass[L].lineFlag==1) {
-        lineClass[L].lineX2=scaleMouseX;
-        lineClass[L].lineY2=scaleMouseY;
+      if (lineFlag) {
+        x2=scaleMouseX;
+        y2=scaleMouseY;
       }
     }
   }
   ///////////ラインの終点を決定//////////////////////////////////////////////////
   void released() {
-    if (lineClass[L].lineFLAG==0) {
-      lineClass[L].lineX2=scaleMouseX;
-      lineClass[L].lineY2=scaleMouseY;
-      lineClass[L].lineFLAG=1;
-      if (lineClass[L].lineX1!=0 && lineClass[L].lineY1!=0) {
-        output.println("  lineX1["+L+"]="+lineClass[L].lineX1+";");
-        output.println("  lineY1["+L+"]="+lineClass[L].lineY1+";");
-        output.println("  lineX2["+L+"]="+lineClass[L].lineX2+";");
-        output.println("  lineY2["+L+"]="+lineClass[L].lineY2+";");
+    if (!lineFLAG) {
+      x2=scaleMouseX;
+      y2=scaleMouseY;
+      lineFLAG=true;
+      if (x1!=0 && y1!=0) {
+        output.println("  lineX1["+L+"]="+x1+";");
+        output.println("  lineY1["+L+"]="+y1+";");
+        output.println("  lineX2["+L+"]="+x2+";");
+        output.println("  lineY2["+L+"]="+y2+";");
       }
     }
     L++;

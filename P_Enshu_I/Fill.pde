@@ -8,13 +8,13 @@ class Fill {
   float fillY2;        //フィルの右下のy座標
   int fillFlag;          //始点の保存とドラッグするためのフラグ
   int fillFLAG;          //次のフィルに移るためのフラグ
-  int fillVisibleFlag;    //色塗り終了フラグ
+  int fillFinishFlag;    //色塗り終了フラグ
   /////////////フィルを描く//////////////////////////////////////////////////////
   void display() {
     if (fillX!=0 && fillY!=0) {
-      if (fillVisibleFlag==0) {
+      if (fillFinishFlag==0) {
         stroke(0, 255, 0);
-      } else if (fillVisibleFlag==1) {
+      } else if (fillFinishFlag==1) {
         noStroke();
       }
       noFill();
@@ -24,9 +24,8 @@ class Fill {
   ////////フィルの始点と大きさを選択//////////////////////////////////////////////
   void dragged() {
     if (fillFLAG==0) {
-      if (!mouseInFillButton()) {
+      if (scaleMouseX>100 || scaleMouseX<0 || scaleMouseY>180 || scaleMouseY<1500) {
         if (fillFlag==0) {
-          fillVisibleFlag = 0;
           fillX=scaleMouseX;
           fillY=scaleMouseY;
           fillFlag=1;
@@ -47,101 +46,88 @@ class Fill {
         fillX2=fillX+fillW;
         fillY2=fillY+fillH;
         //それぞれの図形の主要な点がフィルの枠内に入ると色を塗るフラグが立つ
-        for (int f=0; f<pointC.size(); f++) {
-          if (pointC.get(f).x!=0 && pointC.get(f).y!=0) {
-            if (pointC.get(f).x<fillX2 && pointC.get(f).x>fillX && pointC.get(f).y<fillY2 && pointC.get(f).y>fillY) {
-              output.println("  strokeFlag["+f+"]=1;");
-              pointC.get(f).strokeFlag=true;
-            } else if (pointC.get(f).x<fillX && pointC.get(f).x>fillX2 && pointC.get(f).y<fillY2 && pointC.get(f).y>fillY) {
-              output.println("  strokeFlag["+f+"]=1;");
-              pointC.get(f).strokeFlag=true;
-            } else if (pointC.get(f).x<fillX2 && pointC.get(f).x>fillX && pointC.get(f).y<fillY && pointC.get(f).y>fillY2) {
-              output.println("  strokeFlag["+f+"]=1;");
-              pointC.get(f).strokeFlag=true;
-            } else if (pointC.get(f).x<fillX && pointC.get(f).x>fillX2 && pointC.get(f).y<fillY && pointC.get(f).y>fillY2) {
-              output.println("  strokeFlag["+f+"]=1;");
-              pointC.get(f).strokeFlag=true;
+        for (int f=0; f<5000; f++) {
+          if (pointClass[f].pointX!=0 && pointClass[f].pointY!=0) {
+            if (pointClass[f].pointX<fillX2 && pointClass[f].pointX>fillX && pointClass[f].pointY<fillY2 && pointClass[f].pointY>fillY) {
+              output.println("  pointStrokeFlag["+f+"]=1;");
+              pointClass[f].pointStrokeFlag=1;
+            } else if (pointClass[f].pointX<fillX && pointClass[f].pointX>fillX2 && pointClass[f].pointY<fillY2 && pointClass[f].pointY>fillY) {
+              output.println("  pointStrokeFlag["+f+"]=1;");
+              pointClass[f].pointStrokeFlag=1;
+            } else if (pointClass[f].pointX<fillX2 && pointClass[f].pointX>fillX && pointClass[f].pointY<fillY && pointClass[f].pointY>fillY2) {
+              output.println("  pointStrokeFlag["+f+"]=1;");
+              pointClass[f].pointStrokeFlag=1;
+            } else if (pointClass[f].pointX<fillX && pointClass[f].pointX>fillX2 && pointClass[f].pointY<fillY && pointClass[f].pointY>fillY2) {
+              output.println("  pointStrokeFlag["+f+"]=1;");
+              pointClass[f].pointStrokeFlag=1;
             }
           }
         }
-        for (int f=0; f<lineC.size(); f++) {
-          if (lineC.get(f).x1!=0 && lineC.get(f).y1!=0) {
-            if (lineC.get(f).x1<fillX2 && lineC.get(f).x1>fillX && lineC.get(f).y1<fillY2 && lineC.get(f).y1>fillY) {
+        for (int f=0; f<500; f++) {
+          if (lineClass[f].lineX1!=0 && lineClass[f].lineY1!=0) {
+            if (lineClass[f].lineX1<fillX2 && lineClass[f].lineX1>fillX && lineClass[f].lineY1<fillY2 && lineClass[f].lineY1>fillY) {
               output.println("  lineStrokeFlag["+f+"]=1;");
-              lineC.get(f).strokeFlag=true;
-            } else if (lineC.get(f).x1<fillX && lineC.get(f).x1>fillX2 && lineC.get(f).y1<fillY2 && lineC.get(f).y1>fillY) {
+              lineClass[f].lineStrokeFlag=1;
+            } else if (lineClass[f].lineX1<fillX && lineClass[f].lineX1>fillX2 && lineClass[f].lineY1<fillY2 && lineClass[f].lineY1>fillY) {
               output.println("  lineStrokeFlag["+f+"]=1;");
-              lineC.get(f).strokeFlag=true;
-            } else if (lineC.get(f).x1<fillX2 && lineC.get(f).x1>fillX && lineC.get(f).y1<fillY && lineC.get(f).y1>fillY2) {
+              lineClass[f].lineStrokeFlag=1;
+            } else if (lineClass[f].lineX1<fillX2 && lineClass[f].lineX1>fillX && lineClass[f].lineY1<fillY && lineClass[f].lineY1>fillY2) {
               output.println("  lineStrokeFlag["+f+"]=1;");
-              lineC.get(f).strokeFlag=true;
-            } else if (lineC.get(f).x1<fillX && lineC.get(f).x1>fillX2 && lineC.get(f).y1<fillY && lineC.get(f).y1>fillY2) {
+              lineClass[f].lineStrokeFlag=1;
+            } else if (lineClass[f].lineX1<fillX && lineClass[f].lineX1>fillX2 && lineClass[f].lineY1<fillY && lineClass[f].lineY1>fillY2) {
               output.println("  lineStrokeFlag["+f+"]=1;");
-              lineC.get(f).strokeFlag=true;
+              lineClass[f].lineStrokeFlag=1;
+            }
+          }
+          if (rectClass[f].rectX!=0 && rectClass[f].rectY!=0) {
+            if (rectClass[f].rectX<fillX2 && rectClass[f].rectX>fillX && rectClass[f].rectY<fillY2 && rectClass[f].rectY>fillY) {
+              output.println("  rectFillFlag["+f+"]=1;");
+              rectClass[f].rectFillFlag=1;
+            } else if (rectClass[f].rectX<fillX && rectClass[f].rectX>fillX2 && rectClass[f].rectY<fillY2 && rectClass[f].rectY>fillY) {
+              output.println("  rectFillFlag["+f+"]=1;");
+              rectClass[f].rectFillFlag=1;
+            } else if (rectClass[f].rectX<fillX2 && rectClass[f].rectX>fillX && rectClass[f].rectY<fillY && rectClass[f].rectY>fillY2) {
+              output.println("  rectFillFlag["+f+"]=1;");
+              rectClass[f].rectFillFlag=1;
+            } else if (rectClass[f].rectX<fillX && rectClass[f].rectX>fillX2 && rectClass[f].rectY<fillY && rectClass[f].rectY>fillY2) {
+              output.println("  rectFillFlag["+f+"]=1;");
+              rectClass[f].rectFillFlag=1;
+            }
+          }
+          if (vertexClass[f].vertexX[0]!=0 && vertexClass[f].vertexY[0]!=0) {
+            if (vertexClass[f].vertexX[0]<fillX2 && vertexClass[f].vertexX[0]>fillX && vertexClass[f].vertexY[0]<fillY2 && vertexClass[f].vertexY[0]>fillY) {
+              output.println("  vertexFillFlag["+f+"]=1;");
+              vertexClass[f].vertexFillFlag=1;
+            } else if (vertexClass[f].vertexX[0]<fillX && vertexClass[f].vertexX[0]>fillX2 && vertexClass[f].vertexY[0]<fillY2 && vertexClass[f].vertexY[0]>fillY) {
+              output.println("  vertexFillFlag["+f+"]=1;");
+              vertexClass[f].vertexFillFlag=1;
+            } else if (vertexClass[f].vertexX[0]<fillX2 && vertexClass[f].vertexX[0]>fillX && vertexClass[f].vertexY[0]<fillY && vertexClass[f].vertexY[0]>fillY2) {
+              output.println("  vertexFillFlag["+f+"]=1;");
+              vertexClass[f].vertexFillFlag=1;
+            } else if (vertexClass[f].vertexX[0]<fillX && vertexClass[f].vertexX[0]>fillX2 && vertexClass[f].vertexY[0]<fillY && vertexClass[f].vertexY[0]>fillY2) {
+              output.println("  vertexFillFlag["+f+"]=1;");
+              vertexClass[f].vertexFillFlag=1;
+            }
+          }
+          if (ellipClass[f].ellipX!=0 && ellipClass[f].ellipY!=0) {
+            if (ellipClass[f].ellipX<fillX2 && ellipClass[f].ellipX>fillX && ellipClass[f].ellipY<fillY2 && ellipClass[f].ellipY>fillY) {
+              output.println("  ellipFillFlag["+f+"]=1;");
+              ellipClass[f].ellipFillFlag=1;
+            } else if (ellipClass[f].ellipX<fillX && ellipClass[f].ellipX>fillX2 && ellipClass[f].ellipY<fillY2 && ellipClass[f].ellipY>fillY) {
+              output.println("  ellipFillFlag["+f+"]=1;");
+              ellipClass[f].ellipFillFlag=1;
+            } else if (ellipClass[f].ellipX<fillX2 && ellipClass[f].ellipX>fillX && ellipClass[f].ellipY<fillY && ellipClass[f].ellipY>fillY2) {
+              output.println("  ellipFillFlag["+f+"]=1;");
+              ellipClass[f].ellipFillFlag=1;
+            } else if (ellipClass[f].ellipX<fillX && ellipClass[f].ellipX>fillX2 && ellipClass[f].ellipY<fillY && ellipClass[f].ellipY>fillY2) {
+              output.println("  ellipFillFlag["+f+"]=1;");
+              ellipClass[f].ellipFillFlag=1;
             }
           }
         }
-        for (int f=0; f<rectC.size(); f++) {
-          if (rectC.get(f).x1!=0 && rectC.get(f).y1!=0) {
-            if (rectC.get(f).x1<fillX2 && rectC.get(f).x1>fillX && rectC.get(f).y1<fillY2 && rectC.get(f).y1>fillY) {
-              output.println("  rectFillFlag["+f+"]=1;");
-              rectC.get(f).fillFlag=true;
-            } else if (rectC.get(f).x1<fillX && rectC.get(f).x1>fillX2 && rectC.get(f).y1<fillY2 && rectC.get(f).y1>fillY) {
-              output.println("  rectFillFlag["+f+"]=1;");
-              rectC.get(f).fillFlag=true;
-            } else if (rectC.get(f).x1<fillX2 && rectC.get(f).x1>fillX && rectC.get(f).y1<fillY && rectC.get(f).y1>fillY2) {
-              output.println("  rectFillFlag["+f+"]=1;");
-              rectC.get(f).fillFlag=true;
-            } else if (rectC.get(f).x1<fillX && rectC.get(f).x1>fillX2 && rectC.get(f).y1<fillY && rectC.get(f).y1>fillY2) {
-              output.println("  rectFillFlag["+f+"]=1;");
-              rectC.get(f).fillFlag=true;
-            }
-          }
-        }
-        for (int f=0; f<vertexC.size(); f++) {
-          if (vertexC.get(f).x.get(0)!=0 && vertexC.get(f).y.get(0)!=0) {
-            if (vertexC.get(f).x.get(0)<fillX2 && vertexC.get(f).x.get(0)>fillX && vertexC.get(f).y.get(0)<fillY2 && vertexC.get(f).y.get(0)>fillY) {
-              output.println("  vertexFillFlag["+f+"]=1;");
-              vertexC.get(f).fillFlag=true;
-            } else if (vertexC.get(f).x.get(0)<fillX && vertexC.get(f).x.get(0)>fillX2 && vertexC.get(f).y.get(0)<fillY2 && vertexC.get(f).y.get(0)>fillY) {
-              output.println("  vertexFillFlag["+f+"]=1;");
-              vertexC.get(f).fillFlag=true;
-            } else if (vertexC.get(f).x.get(0)<fillX2 && vertexC.get(f).x.get(0)>fillX && vertexC.get(f).y.get(0)<fillY && vertexC.get(f).y.get(0)>fillY2) {
-              output.println("  vertexFillFlag["+f+"]=1;");
-              vertexC.get(f).fillFlag=true;
-            } else if (vertexC.get(f).x.get(0)<fillX && vertexC.get(f).x.get(0)>fillX2 && vertexC.get(f).y.get(0)<fillY && vertexC.get(f).y.get(0)>fillY2) {
-              output.println("  vertexFillFlag["+f+"]=1;");
-              vertexC.get(f).fillFlag=true;
-            }
-          }
-        }
-        for (int f=0; f<ellipseC.size(); f++) {
-          if (ellipseC.get(f).x1!=0 && ellipseC.get(f).y1!=0) {
-            if (ellipseC.get(f).x1<fillX2 && ellipseC.get(f).x1>fillX && ellipseC.get(f).y1<fillY2 && ellipseC.get(f).y1>fillY) {
-              output.println("  fillFlag["+f+"]=1;");
-              ellipseC.get(f).fillFlag=true;
-            } else if (ellipseC.get(f).x1<fillX && ellipseC.get(f).x1>fillX2 && ellipseC.get(f).y1<fillY2 && ellipseC.get(f).y1>fillY) {
-              output.println("  fillFlag["+f+"]=1;");
-              ellipseC.get(f).fillFlag=true;
-            } else if (ellipseC.get(f).x1<fillX2 && ellipseC.get(f).x1>fillX && ellipseC.get(f).y1<fillY && ellipseC.get(f).y1>fillY2) {
-              output.println("  fillFlag["+f+"]=1;");
-              ellipseC.get(f).fillFlag=true;
-            } else if (ellipseC.get(f).x1<fillX && ellipseC.get(f).x1>fillX2 && ellipseC.get(f).y1<fillY && ellipseC.get(f).y1>fillY2) {
-              output.println("  fillFlag["+f+"]=1;");
-              ellipseC.get(f).fillFlag=true;
-            }
-          }
-        }
-        fillVisibleFlag=1;
-        fillFlag=0;
-        fillFLAG=0;
+        fillFinishFlag=1;
       }
     }
     F++;
   }
-  /*
-  boolean check(String className,int , String x1Name, String x2Name, String y1Name, String y2Name){
-   return className.get(_f).x1Name && className.get(f).x2Name && className.get(f).y1Name && className.get(f).y2Name;
-   }
-   */
 }
